@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Tools",
+  "version": "0.0.5",
+  "identifier": "com.byron.tools",
+  "build": {
+    "beforeDevCommand": "yarn dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "yarn build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "工具箱",
+        "width": 800,
+        "height": 600,
+        "decorations": false,
+        "center": true,
+        "label": "main"
+      },{
+        "title": "设置",
+        "width": 400,
+        "height": 600,
+        "decorations": false,
+        "label": "settings",
+        "resizable": false,
+        "contentProtected": true,
+        "skipTaskbar": true,
+        "maximizable": false,
+        "minimizable": false,
+        "parent": "main",
+        "visible": false,
+        "center": true,
+        "url": "/settings"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "category": "Productivity", 
+    "createUpdaterArtifacts":true,
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "wix": {
+        "language": "zh-CN"
+      },
+      "nsis": {
+        "languages": ["SimpChinese"],
+        "displayLanguageSelector": true
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "dialog": true,
+      "dangerousInsecureTransportProtocol": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ3QzU4MTY3NTVBMzgyOEUKUldTT2dxTlZaNEhGUjhWaUl6YXVMdWk5ckFXV1VrcnFhL2Q5OHZOTmV5b1RmbDhQV25qR2wwV24K",
+      "endpoints": [
+        "http://101.34.60.162:9080/apps/tools/latest.json"
+      ]
+    }
+  }
+}
