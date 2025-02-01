@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import LingkeConfig, { LingkeConfigRef } from '../components/setting/lingkechaci';
 import { Button } from '@/components/ui/button';
 import DefaultConfig, { DefaultConfigRef } from '@/components/setting/default';

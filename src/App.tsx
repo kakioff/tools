@@ -18,7 +18,6 @@ import { listen } from "@tauri-apps/api/event";
 import { openSettingsWindow } from "./utils/webview";
 import checkForUpdates from "./utils/updater";
 import { check } from "@tauri-apps/plugin-updater";
-import { confirm } from "@tauri-apps/plugin-dialog";
 import { toast } from "sonner";
 import Dialog from "./components/dialog";
 import { Progress } from "./components/ui/progress";
