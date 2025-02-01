@@ -1,12 +1,12 @@
 mod service;
-
+mod utils;
 use std::env;
 
 use service::lingkechaci;
 use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    Manager,
+    Emitter, Manager,
 };
 use tauri_plugin_store::StoreExt;
 
@@ -44,13 +44,14 @@ fn greet(name: &str) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let mut app = tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             let quit_i = MenuItem::with_id(app, "quit", "退出", true, None::<&str>)?;
             let settings_i = MenuItem::with_id(app, "settings", "设置", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&quit_i, &settings_i])?;
+            let menu = Menu::with_items(app, &[&settings_i, &quit_i])?;
             let _tray = TrayIconBuilder::new()
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&menu)
@@ -59,13 +60,7 @@ pub fn run() {
                     "quit" => {
                         app.exit(0);
                     }
-                    "settings" => {
-                        let settings_window = app.get_webview_window("settings");
-                        if let Some(sww) = settings_window {
-                            let _ = sww.show();
-                            let _ = sww.set_focus();
-                        }
-                    }
+                    "settings" => app.emit("open-settings", ()).unwrap(),
                     _ => {}
                 })
                 .on_tray_icon_event(|tray, event| match event {
@@ -90,7 +85,8 @@ pub fn run() {
         })
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![greet, lingkechaci, update_hosts])
-        .run(tauri::generate_context!())
+        .invoke_handler(tauri::generate_handler![greet, lingkechaci, update_hosts]);
+    app = utils::window::add_handles(app);
+    app.run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

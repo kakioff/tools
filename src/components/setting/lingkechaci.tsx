@@ -15,7 +15,7 @@ const formSchema = z.object({
     userId: z.string(),
     cookie: z.string(),
 })
-export interface LingkeConfigRef{
+export interface LingkeConfigRef {
     save: () => void
 }
 interface Props {
@@ -41,56 +41,12 @@ const LingkeConfig = forwardRef<LingkeConfigRef, Props>(({
             }
         });
     }, [])
-    // const autoLoad = {
-    //     async openWebview() {
-    //         let windows = await getAllWebviewWindows();
-    //         let w = windows.find(w => w.label === 'lingkechaci');
-    //         if (w) {
-    //             await w.setFocus();
-
-    //         } else {
-    //             w = new WebviewWindow('lingkechaci', {
-    //                 // url: '/lingkechaci/webview',
-    //                 url: 'https://www.lingkechaci.com/',
-    //                 title: '领克查词',
-    //                 width: 1000,
-    //                 height: 800,
-    //                 resizable: true,
-    //                 fullscreen: false,
-    //                 alwaysOnTop: false,
-    //             });
-    //         }
-    //         setWebview(w);
-
-    //     },
-    //     async closeWebview() {
-    //         setWebview(null);
-    //         if (webview) {
-    //             await webview.close();
-    //         }
-    //     },
-    //     async loadConfig() {
-    //         if (!webview) {
-    //             toast.warning("获取配置失败")
-    //             return
-    //         }
-    //         await webview.emit('get-config');
-    //         webview.listen('config', (config: Event<LingkeConfigProps>) => {
-    //             if (!config.payload) {
-    //                 toast.warning("获取配置失败")
-    //                 return
-    //             }
-    //             form.setValue('userId', config.payload.uid);
-    //             form.setValue('cookie', config.payload.cookie);
-    //         });
-    //     }
-    // }
     // 处理提交事件
     const saveConfig = async () => {
         await setSetting('lingkechaci', form.getValues());
     }
 
-    useImperativeHandle(ref, ()=>({
+    useImperativeHandle(ref, () => ({
         save: saveConfig
     }))
 
@@ -114,7 +70,7 @@ const LingkeConfig = forwardRef<LingkeConfigRef, Props>(({
                         <FormItem>
                             <FormLabel>用户ID</FormLabel>
                             <FormControl>
-                                <Input placeholder="shadcn" {...field} />
+                                <Input placeholder="用户ID" {...field} />
                             </FormControl>
                             <FormDescription>
                                 <code className='select-none' onDoubleClick={() => {
@@ -134,7 +90,7 @@ const LingkeConfig = forwardRef<LingkeConfigRef, Props>(({
                         <FormItem>
                             <FormLabel>Cookie</FormLabel>
                             <FormControl>
-                                <Textarea placeholder="shadcn" {...field} />
+                                <Textarea placeholder="Cookie" {...field} />
                             </FormControl>
                             <FormDescription>
                                 <code className='select-none' onDoubleClick={() => {

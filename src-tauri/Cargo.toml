@@ -1,6 +1,6 @@
 [package]
 name = "Tools"
-version = "0.0.2"
+version = "0.0.3"
 description = "Byron's Tools"
 authors = ["byron"]
 edition = "2021"
@@ -33,6 +33,7 @@ hex = "0.4"
 base64 = "0.13"
 tauri-plugin-store = "2"
 tauri-plugin-process = "2"
+tauri-plugin-dialog = "2"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-updater = "2"

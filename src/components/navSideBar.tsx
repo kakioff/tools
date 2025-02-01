@@ -3,39 +3,18 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, Si
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./mode-toggle";
-import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
-import { Window } from "@tauri-apps/api/window";
+import { openSettingsWindow } from "@/utils/webview";
+import { getVersion } from "@tauri-apps/api/app";
+import { useState } from "react";
 
 
 export default function navSideBar() {
+  const [version, setVersion] = useState<string>("")
+
+  getVersion().then(setVersion)
+
   const location = useLocation(); // 获取当前路由
   const currentPath = location.pathname;
-
-
-  const openSettingsWindow = async () => {
-    const mainApp = await Window.getByLabel("main");
-    let mainAppPos = await mainApp?.outerPosition();
-    let mainAppSize = await mainApp?.outerSize();
-    let w = (mainAppSize?.width || 800) / 2,
-      x = (mainAppPos?.x || 0) + w / 2,
-      y = (mainAppPos?.y || 0);
-
-    let webview = new WebviewWindow("settings", {
-      url: "/settings",
-      title: "设置",
-      width: 400,
-      height: mainAppSize?.height || 600,
-      x, y,
-      resizable: false,
-      decorations: false,
-      contentProtected: true,
-      skipTaskbar: true,
-      maximizable: false,
-      minimizable: false,
-      parent: WebviewWindow.getCurrent() || Window.getCurrent(),
-    })
-    webview.show()
-  }
 
   let menu: {
     label: string,
@@ -79,16 +58,14 @@ export default function navSideBar() {
     </SidebarContent>
     <SidebarFooter>
       <div className="flex flex-row justify-between items-center select-none" >
-        <span data-tauri-drag-region>© 2025 Byron</span>
+        <span data-tauri-drag-region>@Byron - v{version}</span>
         <div>
           <ModeToggle />
-          {/* <Link to="/settings"> */}
           <Button variant={currentPath === "/settings" ? "secondary" : "ghost"}
             onClick={openSettingsWindow}
             size='icon'>
             <Icon icon={"tabler:settings"} />
           </Button>
-          {/* </Link> */}
         </div>
       </div>
     </SidebarFooter>

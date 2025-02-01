@@ -52,7 +52,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: "ToolBox v__VERSION__"
+          releaseName: "Tools v__VERSION__"
           releaseBody: "See the assets to download and install this version."
           releaseDraft: false
           prerelease: false

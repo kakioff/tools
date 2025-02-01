@@ -1,14 +1,24 @@
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/components/theme-provider"
 import { Icon } from "@iconify/react/dist/iconify.js"
+import { useEffect } from "react"
+import { setTheme } from "@tauri-apps/api/app"
 
 export function ModeToggle() {
-  const { setTheme, theme } = useTheme()
-  const toggleTheme = () => {
+  const { setTheme: setUiTheme, theme } = useTheme()
+  useEffect(() => {
+    if (theme !== "system") return
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+    setUiTheme(systemTheme)
+    setTheme(systemTheme)
+  }, [])
+  const toggleTheme = async () => {
     if (theme === "dark") {
-      setTheme("light")
+      setUiTheme("light")
+      await setTheme("light")
     } else if (theme === "light") {
-      setTheme("dark")
+      setUiTheme("dark")
+      await setTheme("dark")
     }
   }
   return <Button onClick={toggleTheme} variant='ghost' size='icon'>

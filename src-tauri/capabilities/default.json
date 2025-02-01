@@ -28,6 +28,10 @@
     "core:event:allow-listen",
     "core:event:allow-unlisten",
     "updater:allow-check",
-    "updater:allow-download-and-install"
+    "updater:default",
+    "updater:allow-download",
+    "updater:allow-download-and-install",
+    "dialog:default",
+    "process:allow-exit"
   ]
 }

@@ -10,21 +10,29 @@ import NavSideBar from "./components/navSideBar";
 import { ThemeProvider } from "./components/theme-provider";
 import { Toaster } from "./components/ui/sonner";
 import TitleBar from "./components/titlebar";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Tools from "./pages/tools";
 import Chaci from "./pages/tools/chaci";
 import Translate from "./pages/tools/translate";
-// import checkForUpdates from "./utils/updater";
-function App() {
-  // const [greetMsg, setGreetMsg] = useState("");
-  // const [name, setName] = useState("");
+import { listen } from "@tauri-apps/api/event";
+import { openSettingsWindow } from "./utils/webview";
+import checkForUpdates from "./utils/updater";
+import { check } from "@tauri-apps/plugin-updater";
+import { confirm } from "@tauri-apps/plugin-dialog";
+import { toast } from "sonner";
+import Dialog from "./components/dialog";
+import { Progress } from "./components/ui/progress";
+import { Button } from "./components/ui/button";
+import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 
-  // async function greet() {
-  //   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  //   setGreetMsg(await invoke("greet", { name }));
-  // }
-  // load path name
-  // checkForUpdates()
+function App() {
+
+
+  listen('open-settings', event => {
+    console.log('Received from backend:', event.payload);
+    openSettingsWindow(); // 调用你希望执行的函数
+  });
+
   let [pathname, setPathname] = useState(window.location.pathname);
   window.addEventListener("popstate", () => {
     setPathname(window.location.pathname);
@@ -33,7 +41,51 @@ function App() {
     return !/webview/.test(pathname);
   }, [pathname]);
 
-
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [updateError, setUpdateError] = useState<string>('')
+  const [started, setStarted] = useState(false)
+  const [speed, setSpeed] = useState<string>('')
+  const [fileSize, setFileSize] = useState<string>('')
+  useEffect(() => {
+    let window_label = WebviewWindow.getCurrent()
+    if (window_label.label != "main") {
+      return
+    }
+    check().then(async update => {
+      if (!update?.available) return
+      toast(`发现新版本 v${update.version}，是否立即更新？`, {
+        closeButton: true,
+        action: {
+          label: '立即更新',
+          onClick: async () => {
+            setShowUpdateDialog(true)
+            await checkForUpdates({
+              autoInstall: false,
+              start: (fileSize) => {
+                setStarted(true)
+                setFileSize(fileSize)
+              },
+              progress: (downloaded, contentLength, speed) => {
+                setProgress(downloaded / contentLength * 100)
+                setSpeed(speed)
+              },
+              finished: () => {
+                setStarted(false)
+              },
+              error: (error) => {
+                setUpdateError(error as string)
+                setShowUpdateDialog(false)
+              },
+              cancel: () => {
+                setShowUpdateDialog(false)
+              }
+            })
+          }
+        }
+      })
+    })
+  }, [])
   return <BrowserRouter>
     <ThemeProvider>
       <SidebarProvider defaultOpen={isWebview} style={{
@@ -59,6 +111,20 @@ function App() {
           </div>
         </div>
         <Toaster />
+        <Dialog isOpen={showUpdateDialog} title='更新进度'>
+          <div className='flex flex-row items-center justify-center gap-2'>
+            <Progress value={progress} />
+            <span className='nowrap text-sm text-muted-foreground'>{Number.isInteger(progress) ? progress : progress.toFixed(2)}%</span>
+          </div>
+          {updateError && <p className='text-sm text-red-500'>{updateError}</p>}
+          <div className='text-sm text-muted-foreground flex flex-row items-center justify-between'>
+            {started ? <span className='w-24 inline-block text-sm text-muted-foreground text-right'>{speed}</span> : <div></div>}
+            <div>
+              <span className='inline-block mr-1'>{fileSize}</span>
+              <Button variant="ghost" disabled={started} onClick={() => setShowUpdateDialog(false)}>关闭</Button>
+            </div>
+          </div>
+        </Dialog>
       </SidebarProvider>
     </ThemeProvider>
   </BrowserRouter>
