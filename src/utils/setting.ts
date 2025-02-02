@@ -29,8 +29,6 @@ export async function setSetting(key: keyof SettingType, value: SettingType[keyo
     const store = await Store.load(settingFilePath);
 
     try {
-        console.log(value);
-        
         await store.set(key, value);
     } catch (error) {
         console.error(`Failed to set setting for key "${key}":`, error);

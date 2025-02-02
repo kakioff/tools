@@ -10,13 +10,27 @@ import Dialog from '@/components/dialog';
 import checkForUpdates from '@/utils/updater';
 import { Progress } from '@/components/ui/progress';
 import { exit } from '@tauri-apps/plugin-process';
+import AiConfig, { AiConfigRef } from '@/components/setting/ai';
+import { toast } from 'sonner';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 export default function Settings() {
     const lkConf = useRef<LingkeConfigRef>(null);
     const defConf = useRef<DefaultConfigRef>(null);
+    const aiConf = useRef<AiConfigRef>(null);
+    const [isSaving, setIsSaving] = useState(false);
     const saveAllConfig = () => {
-        lkConf.current?.save();
-        defConf.current?.save();
+        setIsSaving(true);
+        try {
+            lkConf.current?.save();
+            defConf.current?.save();
+            aiConf.current?.save();
+            toast.success('保存成功');
+        } catch (error) {
+            toast.error('保存失败');
+        } finally {
+            setIsSaving(false);
+        }
     }
     const [version, setVersion] = useState<string>('');
     const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
@@ -72,7 +86,7 @@ export default function Settings() {
             },
             cancel() {
                 setShowUpdateDialog(false)
-            }   
+            }
         })
     }
 
@@ -81,8 +95,13 @@ export default function Settings() {
             <DefaultConfig ref={defConf} />
             <p></p>
             <LingkeConfig showSaveButton={false} ref={lkConf} />
+            <p></p>
+            <AiConfig ref={aiConf} />
             <p className='text-right'>
-                <Button onClick={saveAllConfig}>保存所有配置</Button>
+                <Button onClick={saveAllConfig} disabled={isSaving}>
+                    {isSaving && <Icon icon="svg-spinners:180-ring" />}
+                    保存所有配置
+                </Button>
             </p>
             <p className='flex flex-row justify-between items-center'>
                 <span>当前版本：v{version}</span>
@@ -93,7 +112,7 @@ export default function Settings() {
                     exit(0)
                 }} variant="destructive">退出</Button>
             </p>
-            <Dialog isOpen={showUpdateDialog} title='更新进度'>
+            <Dialog isOpen={showUpdateDialog} title='下载进度'>
                 <div className='flex flex-row items-center justify-center gap-2'>
                     <Progress value={progress} />
                     <span className='nowrap text-sm text-muted-foreground'>{Number.isInteger(progress) ? progress : progress.toFixed(2)}%</span>

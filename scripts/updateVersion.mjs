@@ -1,6 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-
+import { exit } from 'process';
+// 需要更新的文件列表，可以根据需要添加其它文件
+const filesToUpdate = [
+  'package.json',
+  'src-tauri/tauri.conf.json',
+  'src-tauri/Cargo.toml'
+];
 /**
  * 更新 JSON 文件（package.json, tauri.conf.json等）
  */
@@ -19,6 +25,13 @@ function updateJsonFile(filePath, newVersion) {
   }
 }
 
+async function getVersion() {
+  let file = "package.json"
+  let content = fs.readFileSync(file, 'utf8');
+  let json = JSON.parse(content);
+  return json.version;
+}
+
 /**
  * 更新 Cargo.toml 文件中的版本号
  * 使用正则匹配类似 version = "..." 的内容进行替换
@@ -32,17 +45,17 @@ function updateCargoToml(filePath, newVersion) {
 
 // 获取命令行参数，新版本号作为第一个参数
 if (process.argv.length < 3) {
-  console.error('用法: node update-version.js <new_version>');
+  console.error('用法: node update-version.js <new_version>/<get>');
   process.exit(1);
 }
 const newVersion = process.argv[2];
+if (newVersion === "get") {
+  let version = await getVersion();
+  console.log("当前版本号：", version);
+  exit(0);
+}
 
-// 需要更新的文件列表，可以根据需要添加其它文件
-const filesToUpdate = [
-  'package.json',
-  'src-tauri/tauri.conf.json',
-  'src-tauri/Cargo.toml'
-];
+
 
 filesToUpdate.forEach(file => {
   const filePath = path.join(process.cwd(), file);

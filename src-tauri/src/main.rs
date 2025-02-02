@@ -3,6 +3,7 @@
 
 pub mod service;
 pub mod utils;
+pub mod store;
 
 fn main() {
     tools_lib::run()

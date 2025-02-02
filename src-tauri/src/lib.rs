@@ -1,5 +1,6 @@
 mod service;
 mod utils;
+mod store;
 use std::env;
 
 use service::lingkechaci;
@@ -87,6 +88,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![greet, lingkechaci, update_hosts]);
     app = utils::window::add_handles(app);
+    app = utils::tarnslate::add_handles(app);
     app.run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

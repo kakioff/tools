@@ -52,7 +52,7 @@ const LingkeConfig = forwardRef<LingkeConfigRef, Props>(({
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(saveConfig)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(saveConfig)} className="space-y-4 px-1">
                 <h2>
                     <a href="https://www.lingkechaci.com/" target='_blank' className='underline mr-1'>领克查词</a>
                     配置
