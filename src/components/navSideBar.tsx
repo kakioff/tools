@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenuButton } from "./ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenuButton, SidebarTrigger } from "./ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./mode-toggle";
@@ -39,9 +39,12 @@ export default function navSideBar() {
     path: "https://chatgpt.com",
     link: true
   }]]
-  return <Sidebar >
+  return <Sidebar>
     <SidebarHeader>
-      <h2 data-tauri-drag-region className="select-none">工具箱</h2>
+      <h2 data-tauri-drag-region className="select-none flex flex-row items-center gap-2">
+        <SidebarTrigger />
+        工具箱
+      </h2>
     </SidebarHeader>
     <SidebarContent data-tauri-drag-region>
       {menu.map((itemGroup, gi) => <div key={gi}>
@@ -57,7 +60,7 @@ export default function navSideBar() {
       </div>)}
     </SidebarContent>
     <SidebarFooter>
-      <div className="flex flex-row justify-between items-center select-none" >
+      <div className="flex flex-row justify-between items-center select-none w-full text-xs" >
         <span data-tauri-drag-region>@Byron - v{version}</span>
         <div>
           <ModeToggle />

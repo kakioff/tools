@@ -26,9 +26,8 @@ import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 function App() {
 
-
-  listen('open-settings', event => {
-    console.log('Received from backend:', event.payload);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  listen('open-settings', () => {
     openSettingsWindow(); // 调用你希望执行的函数
   });
 
@@ -87,8 +86,8 @@ function App() {
   }, [])
   return <BrowserRouter>
     <ThemeProvider>
-      <SidebarProvider defaultOpen={isWebview} style={{
-        // "--sidebar-width": "13rem",
+      <SidebarProvider defaultOpen={isWebview} open={isSidebarOpen} onOpenChange={setIsSidebarOpen} style={{
+        "--sidebar-width": "12rem",
         "--sidebar-width-mobile": "10rem",
       } as React.CSSProperties} onContextMenu={(e) => {
         e.preventDefault()
@@ -97,7 +96,7 @@ function App() {
         <NavSideBar />
         {/* <SidebarTrigger /> */}
         <div className="w-full h-dvh flex flex-col">
-          {isWebview && <TitleBar />}
+          {isWebview && <TitleBar showSidebarTrigger={isWebview && !isSidebarOpen} />}
           <div className="w-full h-full overflow-hidden">
             <Routes>
               <Route path="/" element={<Home />} />

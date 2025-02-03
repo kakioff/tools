@@ -39,7 +39,7 @@ export default function Translate() {
     }, [text]);
 
     return <div className='flex flex-row gap-2 h-full w-full px-2 py-2'>
-        <Textarea value={text} placeholder='请输入要翻译的文本' disabled={loading} onChange={(e) => setText(e.target.value)} className='w-full h-full' />
+        <Textarea value={text} placeholder='请输入要翻译的文本' onChange={(e) => setText(e.target.value)} className='w-full h-full' />
         <div className='flex flex-col gap-2 w-full h-full justify-between'>
             <p className='text-sm'>
                 {result}

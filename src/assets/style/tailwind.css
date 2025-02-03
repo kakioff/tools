@@ -80,7 +80,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background/90 text-foreground;
+    @apply bg-background text-foreground;
   }
 }
 
@@ -127,4 +127,7 @@ ul {
 }
 code{
   @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
+}
+.group.toaster .group-\[\.toaster\]\:bg-background{
+  background-color: rgba(var(--background)/0.9) !important;
 }
