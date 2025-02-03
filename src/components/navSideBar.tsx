@@ -26,14 +26,20 @@ export default function navSideBar() {
     icon: "tabler:home",
     path: "/"
   }, {
-    label: "查违禁词",
-    icon: "tabler:search",
-    path: "/tools/chaci"
+    label: "Hosts",
+    icon: "tabler:network",
+    path: "/tools/hosts"
+
   }, {
     label: "翻译",
     icon: "tabler:language",
     path: "/tools/translate"
+
   }], [{
+    label: "查违禁词",
+    icon: "tabler:search",
+    path: "/tools/chaci"
+  }, {
     label: "ChatGPT",
     icon: "tabler:brand-openai",
     path: "https://chatgpt.com",

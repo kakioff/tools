@@ -32,43 +32,8 @@ async fn lingkechaci(content: &str, app: tauri::AppHandle) -> Result<String, ()>
 }
 
 #[tauri::command]
-async fn update_hosts() -> Result<(), ()> {
-    service::hosts::update_hosts().await;
-    Ok(())
-}
-use std::ptr::null_mut;
-use winapi::um::{
-    processthreadsapi::{GetCurrentProcess, OpenProcessToken},
-    securitybaseapi::GetTokenInformation,
-    winnt::{TokenElevation, HANDLE, TOKEN_ELEVATION, TOKEN_QUERY},
-};
-fn is_running_as_admin() -> bool {
-    unsafe {
-        let mut token_handle: HANDLE = null_mut();
-        if OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &mut token_handle) == 0 {
-            return false;
-        }
-
-        let mut elevation = TOKEN_ELEVATION { TokenIsElevated: 0 };
-        let mut return_length: u32 = 0;
-        if GetTokenInformation(
-            token_handle,
-            TokenElevation,
-            &mut elevation as *mut _ as *mut _,
-            size_of::<TOKEN_ELEVATION>() as u32,
-            &mut return_length,
-        ) == 0
-        {
-            return false;
-        }
-
-        elevation.TokenIsElevated != 0
-    }
-}
-
-#[tauri::command]
 fn is_admin() -> bool {
-    let is_admin = is_running_as_admin();
+    let is_admin = crate::utils::is_running_as_admin();
     is_admin
 }
 
@@ -80,7 +45,7 @@ fn greet(name: &str) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let mut app = tauri::Builder::default()
+    tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -120,16 +85,29 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_store::Builder::new().build())
-        .plugin(tauri_plugin_shell::init());
+        .plugin(tauri_plugin_shell::init())
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            lingkechaci,
+            is_admin,
+            utils::window::create_settings_window,
+            utils::translate::translate,
+            utils::system::get_hosts_content,
+            utils::system::update_hosts,
+            utils::system::save_hosts_content,
+        ])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 
-    app = utils::window::add_handles(app);
-    app = utils::tarnslate::add_handles(app);
-    app.invoke_handler(tauri::generate_handler![
-        greet,
-        lingkechaci,
-        update_hosts,
-        is_admin
-    ])
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    // app = utils::window::add_handles(app);
+    // app = utils::translate::add_handles(app);
+
+    // app.invoke_handler(tauri::generate_handler![
+    //     greet,
+    //     lingkechaci,
+    //     update_hosts,
+    //     is_admin
+    // ])
+    // .run(tauri::generate_context!())
+    // .expect("error while running tauri application");
 }

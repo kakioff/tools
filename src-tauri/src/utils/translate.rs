@@ -1,6 +1,6 @@
 use crate::service::siliconflow::{create_chat, Message};
 use crate::store::config::get_silicon_flow_api_key;
-use tauri::{Builder, Emitter, Wry};
+use tauri::Emitter;
 
 #[tauri::command]
 pub async fn translate(text: String, event_id: String, app: tauri::AppHandle) -> String {
@@ -38,6 +38,6 @@ pub async fn translate(text: String, event_id: String, app: tauri::AppHandle) ->
     "".to_string()
 }
 
-pub fn add_handles(app: Builder<Wry>) -> Builder<Wry> {
-    app.invoke_handler(tauri::generate_handler![translate])
-}
+// pub fn add_handles(app: Builder<Wry>) -> Builder<Wry> {
+//     app.invoke_handler(tauri::generate_handler![translate])
+// }

@@ -23,6 +23,7 @@ import Dialog from "./components/dialog";
 import { Progress } from "./components/ui/progress";
 import { Button } from "./components/ui/button";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+import Hosts from "./pages/tools/hosts";
 
 function App() {
 
@@ -45,6 +46,9 @@ function App() {
   const [started, setStarted] = useState(false)
   const [speed, setSpeed] = useState<string>('')
   const [fileSize, setFileSize] = useState<string>('')
+  // 窗口宽度
+  const [windowWidth, setWindowWidth] = useState(0)
+
   useEffect(() => {
     let window_label = WebviewWindow.getCurrent()
     if (window_label.label != "main") {
@@ -83,7 +87,12 @@ function App() {
         }
       })
     })
+    window.addEventListener("resize", () => {
+      setWindowWidth(window.innerWidth)
+    })
+    setWindowWidth(window.innerWidth)
   }, [])
+  const sidebarHidden = windowWidth < 768
   return <BrowserRouter>
     <ThemeProvider>
       <SidebarProvider defaultOpen={isWebview} open={isSidebarOpen} onOpenChange={setIsSidebarOpen} style={{
@@ -96,7 +105,7 @@ function App() {
         <NavSideBar />
         {/* <SidebarTrigger /> */}
         <div className="w-full h-dvh flex flex-col">
-          {isWebview && <TitleBar showSidebarTrigger={isWebview && !isSidebarOpen} />}
+          {isWebview && <TitleBar showSidebarTrigger={!isSidebarOpen || sidebarHidden} />}
           <div className="w-full h-full overflow-hidden">
             <Routes>
               <Route path="/" element={<Home />} />
@@ -104,11 +113,14 @@ function App() {
               <Route path="/tools" element={<Tools />} />
               <Route path="/tools/chaci" element={<Chaci />} />
               <Route path="/tools/translate" element={<Translate />} />
+              <Route path="/tools/hosts" element={<Hosts />} />
               <Route path="*" element={<div>404</div>} />
             </Routes>
           </div>
         </div>
-        <Toaster />
+        <Toaster toastOptions={{
+          closeButton: true
+        }} />
         <Dialog isOpen={showUpdateDialog} title='更新进度'>
           <div className='flex flex-row items-center justify-center gap-2'>
             <Progress value={progress} />

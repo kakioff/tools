@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { invoke } from '@tauri-apps/api/core';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
@@ -40,12 +41,13 @@ export default function Translate() {
 
     return <div className='flex flex-row gap-2 h-full w-full px-2 py-2'>
         <Textarea value={text} placeholder='请输入要翻译的文本' onChange={(e) => setText(e.target.value)} className='w-full h-full' />
-        <div className='flex flex-col gap-2 w-full h-full justify-between'>
-            <p className='text-sm'>
-                {result}
+        <div className='flex flex-col gap-2 w-full h-full justify-between border'>
+            <ScrollArea className='h-full overflow-y-auto'>
+                <p className='text-sm px-1 inline' dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, '<br />') }}>
+                </p>
                 {loading && <span className='inline-block w-3 h-3 bg-foreground rounded-full animate-pulse'></span>}
-            </p>
-            <p className='flex flex-row gap-1'>
+            </ScrollArea>
+            <p className='flex flex-row gap-1 pb-1 px-1'>
                 {<Button className={`w-full transition-all duration-300 ${!loading && result.length > 0 ? 'opacity-100' : 'opacity-0'}`} variant='outline' onClick={() => {
                     navigator.clipboard.writeText(result);
                     toast.success('复制成功');

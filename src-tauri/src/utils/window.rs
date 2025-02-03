@@ -1,7 +1,7 @@
-use tauri::{Builder, Manager, WebviewUrl, Wry};
+use tauri::{Manager, WebviewUrl};
 
 #[tauri::command]
-fn create_settings_window(app: tauri::AppHandle) -> String {
+pub fn create_settings_window(app: tauri::AppHandle) -> String {
     let settings_webview = if let Some(window) = app.get_webview_window("settings") {
         window
     } else {
@@ -29,6 +29,6 @@ fn create_settings_window(app: tauri::AppHandle) -> String {
     "OK".to_string()
 }
 
-pub fn add_handles(app: Builder<Wry>) -> Builder<Wry> {
-    app.invoke_handler(tauri::generate_handler![create_settings_window])
-}
+// pub fn add_handles(app: Builder<Wry>) -> Builder<Wry> {
+//     app.invoke_handler(tauri::generate_handler![create_settings_window])
+// }

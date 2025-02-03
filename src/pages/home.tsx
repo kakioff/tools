@@ -1,24 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { invoke } from "@tauri-apps/api/core";
-import { toast } from "sonner";
-
+import frustrated from "@/assets/imgs/frustrated.png"
 export default function Home() {
-    const updateHosts = async ()=>{
-        // 更新hosts
-        // 检查是否是管理员
-        const isAdmin = await invoke("is_admin")
-        if (isAdmin) {
-            await invoke("update_hosts")
-        } else {
-            toast.error("请以管理员身份运行")
-        }
 
-
-    }
     return (
-        <div className=' px-4 pb-4 space-y-5'>
-            <h1>主页</h1>
-            <Button onClick={updateHosts}>update github hosts</Button>
+        <div className=' px-4 pb-4 space-y-5 relative h-full'>
+            <div className="bg-white rounded-full w-1/4 aspect-square absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+            <img src={frustrated} alt="logo" className="w-full h-full object-contain absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop-blur-3xl bg-background/60" />
         </div>
     );
+
 };

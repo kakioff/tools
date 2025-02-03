@@ -27,10 +27,27 @@ pub async fn get_github_hosts() -> String {
 }
 #[allow(dead_code)]
 pub fn get_hosts_path() -> String {
-    "c:\\Windows\\System32\\drivers\\etc\\hosts".to_string()
+    #[cfg(target_os = "windows")]
+    {
+        "c:\\Windows\\System32\\drivers\\etc\\hosts".to_string()
+    }
+    #[cfg(target_os = "linux")]
+    {
+        "/etc/hosts".to_string()
+    }
+    #[cfg(target_os = "macos")]
+    {
+        "/etc/hosts".to_string()
+    }
+
 }
 #[allow(dead_code)]
 pub fn get_hosts() -> String {
     let hosts = std::fs::read_to_string(get_hosts_path()).unwrap();
     hosts
 }
+#[allow(dead_code)]
+pub fn save_hosts(content: String) {
+    std::fs::write(get_hosts_path(), content).unwrap();
+}
+
